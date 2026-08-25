@@ -1,0 +1,6 @@
+yfinance
+requests
+feedparser
+numpy
+pandas
+python-dotenv

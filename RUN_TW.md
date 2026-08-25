@@ -2,7 +2,7 @@
 
 0. 用已连接的 Google Drive MCP 连接器（工具名类似 `mcp__<uuid>__read_file_content`）读取以下两个档案：
    - LINE token 档案，fileId = `1wRfJPq3YJUMBZSHJvTEHBWVTPqguKYj2`。取得内容后（去除头尾空白/换行），写入本地 `.env`，格式：`LINE_CHANNEL_ACCESS_TOKEN=<内容>`
-   - 持仓资料档案，fileId = `16AdQPQdPb1MNopnC86d6udN8pLOQr0E0`。取得内容后，原样写入本地 `portfolio.csv`（覆盖掉 repo 里可能存在的旧内容）
+   - 持仓资料是 Google Sheet，fileId = `1m3kc3QRDuFH_gYWeUNBy4MbOaafLeHgkWEnu4NMqJyo`。用 `download_file_content`（exportMimeType 设为 `text/csv`）取得内容，回传的 `content` 是 base64，要先 base64 解码成文字，再写入本地 `portfolio.csv`（覆盖掉 repo 里可能存在的旧内容）
    这两个档案是敏感资料，只能读取写入本地暂存档，绝对不能 commit、push 或以任何方式输出/回传其内容（包含不能整段贴在讯息或 log 里）
 1. `pip install -r requirements.txt`
 2. `python fetch_market.py tw`

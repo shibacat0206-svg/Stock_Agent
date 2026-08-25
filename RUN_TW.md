@@ -1,9 +1,13 @@
 # 台股每日早报流程
 
+0. 用已连接的 Google Drive MCP 连接器（工具名类似 `mcp__<uuid>__read_file_content`）读取以下两个档案：
+   - LINE token 档案，fileId = `1wRfJPq3YJUMBZSHJvTEHBWVTPqguKYj2`。取得内容后（去除头尾空白/换行），写入本地 `.env`，格式：`LINE_CHANNEL_ACCESS_TOKEN=<内容>`
+   - 持仓资料档案，fileId = `16AdQPQdPb1MNopnC86d6udN8pLOQr0E0`。取得内容后，原样写入本地 `portfolio.csv`（覆盖掉 repo 里可能存在的旧内容）
+   这两个档案是敏感资料，只能读取写入本地暂存档，绝对不能 commit、push 或以任何方式输出/回传其内容（包含不能整段贴在讯息或 log 里）
 1. `pip install -r requirements.txt`
 2. `python fetch_market.py tw`
 3. `python fetch_news.py tw`
-4. 打开 `portfolio.csv`，如果里面有未被 `#` 注释掉的持仓资料列（market 栏为 TW 的），执行 `python analyze_portfolio.py`
+4. 如果 `portfolio.csv` 里有未被 `#` 注释掉的持仓资料列（market 栏为 TW 的），执行 `python analyze_portfolio.py`
 5. 读取当天产生的 `data/tw_snapshot_<今天日期>.json`、`data/tw_news_<今天日期>.json`；如果第 4 步有跑，也读 `data/portfolio_snapshot_<今天日期>.json`
 6. 根据这些资料自行分析、排名，写出一份繁体中文报告，规则如下：
    - 开头一行标题「【台股早报 YYYY-MM-DD】」

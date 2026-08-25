@@ -10,10 +10,11 @@ import time
 import datetime
 import numpy as np
 import pandas as pd
-import yfinance as yf
-
-from config import TW_WATCHLIST, US_WATCHLIST, DATA_DIR
 import os
+
+from config import TW_WATCHLIST, US_WATCHLIST, DATA_DIR  # 须在 import yfinance 前执行，修正非 ASCII 路径下的憑證问题
+
+import yfinance as yf
 
 
 def compute_rsi(closes: pd.Series, period: int = 14) -> float:

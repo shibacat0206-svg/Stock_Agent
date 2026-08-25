@@ -36,6 +36,29 @@ US_WATCHLIST = {
 import os
 from dotenv import load_dotenv
 
+
+# Windows 上若使用者路徑含非 ASCII 字元（例如中文使用者名），curl_cffi
+# （yfinance 用來繞過 Yahoo 反爬蟲）讀取 certifi 憑證路徑會失敗，
+# 這裡偵測到非 ASCII 路徑時自動把憑證複製到磁碟根目錄下的安全路徑。
+def _ensure_ascii_cacert():
+    import certifi
+    path = certifi.where()
+    try:
+        path.encode("ascii")
+        return
+    except UnicodeEncodeError:
+        pass
+    import shutil
+    safe_dir = os.path.join(os.environ.get("SystemDrive", "C:") + os.sep, "stock_agent_ca")
+    os.makedirs(safe_dir, exist_ok=True)
+    safe_path = os.path.join(safe_dir, "cacert.pem")
+    if not os.path.exists(safe_path):
+        shutil.copyfile(path, safe_path)
+    certifi.where = lambda: safe_path
+
+
+_ensure_ascii_cacert()
+
 load_dotenv(os.path.join(os.path.dirname(__file__), ".env"))
 
 LINE_CHANNEL_ACCESS_TOKEN = os.environ.get("LINE_CHANNEL_ACCESS_TOKEN", "")

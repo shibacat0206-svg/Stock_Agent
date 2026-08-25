@@ -1,4 +1,5 @@
 yfinance
+multitasking<0.0.12  # >=0.0.12 uses `type[X]` syntax that requires Python 3.9+
 requests
 feedparser
 numpy

@@ -1,6 +1,8 @@
 """
 读取 portfolio.csv（你的实际持仓），抓当前价格与技术/基本面数据，计算损益与部位权重。
-用法: python analyze_portfolio.py
+用法: python analyze_portfolio.py          # 台股+美股持仓都分析
+      python analyze_portfolio.py tw       # 只分析台股持仓
+      python analyze_portfolio.py us       # 只分析美股持仓
 """
 import sys
 sys.stdout.reconfigure(encoding="utf-8")
@@ -41,9 +43,14 @@ def resolve_name(ticker: str, market: str) -> str:
 
 
 def main():
+    market_filter = sys.argv[1].upper() if len(sys.argv) > 1 else None
+
     holdings = load_portfolio()
+    if market_filter:
+        holdings = [h for h in holdings if h["market"] == market_filter]
     if not holdings:
-        print("portfolio.csv 是空的，没有持仓可分析。")
+        msg = "portfolio.csv 是空的，没有持仓可分析。" if not market_filter else f"portfolio.csv 里没有 {market_filter} 市场的持仓。"
+        print(msg)
         return
 
     results = []
@@ -94,7 +101,8 @@ def main():
 
     os.makedirs(DATA_DIR, exist_ok=True)
     today = datetime.date.today().isoformat()
-    out_path = os.path.join(DATA_DIR, f"portfolio_snapshot_{today}.json")
+    suffix = f"_{market_filter.lower()}" if market_filter else ""
+    out_path = os.path.join(DATA_DIR, f"portfolio_snapshot{suffix}_{today}.json")
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump({
             "date": today,
